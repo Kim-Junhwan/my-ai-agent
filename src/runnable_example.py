@@ -1,25 +1,30 @@
 from typing import final
 from unittest import result
 
-from langchain.chat_models import init_chat_model
+from langchain.chat_models import BaseChatModel, init_chat_model
+from langchain.messages import SystemMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda
 from my_agent import get_settings
 
 
 model = init_chat_model(model_provider="openai", model="gpt-5.2", api_key = get_settings().openai_api_key.get_secret_value())
-prompt = ChatPromptTemplate.from_template("{topic}에 대해 설명해주세요. 간단하게 10줄 이내로.")
+prompt = ChatPromptTemplate.from_messages([
+    ("human","{question}에 대해 설명해주세요. 한줄이내로."),
+    ("system","사용자의 대답에 영어로만 답해주세요.")
+    ])
 parser = StrOutputParser()
 
-prompt_value = prompt.invoke({"topic":"양자컴퓨팅"})
-print(prompt_value)
-model_output = model.invoke(prompt_value)
-print(model_output)
-final_result = parser.invoke(model_output)
-print(final_result)
+def preProcess(text: str) -> dict:
+    return {"question": text.strip().lower()}
 
-print("----------------")
+def postProcess(message: BaseChatModel) -> str:
+    return message.text.upper()
 
-chain = prompt | model | parser
-result = chain.invoke({"topic":"양자컴퓨팅"})
+preprocess_runnable=RunnableLambda(preProcess)
+postprocess_runnable=RunnableLambda(postProcess)
+
+chain = preprocess_runnable | prompt | model | postprocess_runnable
+result = chain.invoke("cat")
 print(result)
