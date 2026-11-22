@@ -14,6 +14,9 @@ class Settings(BaseSettings):
 
     debug: bool = Field(False, description="디버그 모드")
 
+    opensearch_host: str = Field("localhost", description="OpenSearch 호스트 주소")
+    opensearch_port: int = Field(9200, description="OpenSearch 포트")
+
 def get_settings() -> Settings:
     """설정 인스턴스르 반환합니다."""
     return Settings()

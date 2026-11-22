@@ -39,6 +39,8 @@ uv run streamlit run src/app.py
 OPENAI_API_KEY=...
 DEFAULT_MODEL=...   # 기본값: gpt-5.2
 DEBUG=false
+OPENSEARCH_HOST=... # 기본값: localhost
+OPENSEARCH_PORT=... # 기본값: 9200
 ```
 
 설정은 `src/my_agent/config.py`의 `Settings` 클래스(pydantic-settings)가 `.env`에서 자동으로 로드한다.
