@@ -1,5 +1,5 @@
 from langchain.chat_models import init_chat_model
-from langchain_core.prompts import load_prompt
+from langchain_core.prompts import PromptTemplate, load_prompt
 from openai import api_key
 
 from my_agent.config import get_settings
