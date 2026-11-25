@@ -1,3 +1,5 @@
+from re import search
+
 from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
 from openai import api_key
@@ -33,7 +35,7 @@ rag_prompt = ChatPromptTemplate.from_messages([
 
 def ask_rag(question: str) -> str:
     search_result = search_document(question, k=3)
-
+    print(f"search doc = {search_result}")
     context = "\n\n--\n\n".join([
         f"[출처: {r['metadata']['source']}, 청크 {r['metadata']['chunk_index']}]\n{r['content']}"
         for r in search_result
